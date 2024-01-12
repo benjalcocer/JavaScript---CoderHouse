@@ -1,0 +1,37 @@
+[
+    {
+      "id": 1,
+      "nombre": "zapatillas negras",
+      "precio": 55000,
+      "marca": "nike",
+      "cant": 2
+    },
+    {
+      "id": 2,
+      "nombre": "pantalon cargo",
+      "precio": 25000,
+      "marca": "Levis",
+      "cant": 10
+    },
+    {
+      "id": 3,
+      "nombre": "buzo violeta",
+      "precio": 12000,
+      "marca": "vatra",
+      "cant": 5
+    },
+    {
+      "id": 4,
+      "nombre": "buzo negro",
+      "precio": 12000,
+      "marca": "vatra",
+      "cant": 7
+    },
+    {
+      "id": 5,
+      "nombre": "remera vatra violeta",
+      "precio": 5000,
+      "marca": "nike",
+      "cant": 10
+    }
+  ]

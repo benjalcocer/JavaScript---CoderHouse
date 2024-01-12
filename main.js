@@ -1,84 +1,162 @@
-let notapar1 = 0
-let notapar2 = 0
-let rta = true
+const Prenda = function (id, nombre, precio, marca, cant) {
+    this.id = id;
+    this.nombre = nombre;
+    this.precio = precio;
+    this.marca = marca;
+    this.cant = cant;
+};
 
+let ropa = [];
 
-function promocion(){
-let num = true
-do{
-    let notapar1 = parseFloat(prompt("Ingrese la nota del 1er Parcial"));
-    let notapar2 = parseFloat(prompt("Ingrese la nota del 2da Parcial"));
-    let notaparsum = notapar1 + notapar2
-    if(notapar1>10 || notapar2>10){
-        alert("Ingrese los valores correctos que son menores a 10 en ambos parciales")
-    }
-    else{
-        if((notapar1>=8 || notapar2>=8) && (notaparsum >= 16)){
-            alert("Felicitaciones usted a promocionado la materia!")
-        }
-        else{
-            if(notapar1<6 && notapar2<6){
-                alert("Debe recuperar ambos parciales")
-            }
-            else{
-                if(notapar1<8){
-                    let notdebpar1 = 16 - notapar2
-                    if(notdebpar1 > 10){
-                        alert("debe recuperar ambos parciales")
-                    }
-                    else{
-                        alert("Debe recuperar el 1er parcial y sacar una nota de " +notdebpar1+ " para promocionar")
+/* Fetch en funcion para evitar error */ 
+
+function cargarPrendas() {
+    return fetch("prendas.json")
+        .then( (res) => res.json())
+        .then(data => {
+            ropa = data;
+            localStorage.setItem("prendas", JSON.stringify(ropa));
+        })
+        .catch(error => {console.error("No hay nada")});
+}
+
+if (localStorage.getItem("prendas")) {
+    ropa = JSON.parse(localStorage.getItem("prendas"));
+} else {
+    cargarPrendas();
+}
+
+function filtrarPrendas() {
+    const body = document.querySelector("body");
+    const input = document.getElementById("filtpre").value;
+    const palabra = input.trim().toUpperCase();
+    const busqueda = ropa.filter((prenda) => prenda.nombre.toUpperCase().includes(palabra));
+
+    if (busqueda.length > 0) {
+        const container = document.createElement("div");
+        container.className = "container";
+
+        busqueda.forEach((prenda) => {
+            const card = document.createElement("div");
+            card.className = "card";
+
+        const id = document.createElement("h2")
+        id.textContent = `ID: ${prenda.id}`
+        card.appendChild(id)
+
+        const nombre = document.createElement("p")
+        nombre.textContent = `Prenda: ${prenda.nombre}`
+        card.appendChild(nombre)
+
+        const marca = document.createElement("p")
+        marca.textContent = `Marca: ${prenda.marca}`
+        card.appendChild(marca)
+
+        const cant = document.createElement("p")
+        cant.textContent = `Stock: ${prenda.cant}`
+        const inputNuevoCant = document.createElement("input")
+        inputNuevoCant.placeholder = "Cantidad";
+        const btnNuevoCant = document.createElement("button")
+        btnNuevoCant.textContent = "Añadir Stock";
+        btnNuevoCant.addEventListener("click", (e) => {
+            const nuevoCant = parseInt(inputNuevoCant.value)
+            const prendaele = ropa.find( (produc) => produc.id === prenda.id);
+
+            if (prendaele) {
+                if (isNaN(nuevoCant)) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Ingrese producto",
+                        text: "Ponga una cantidad en numeros"
+                    });
+                    return;
+                } 
+                else {
+                    if (nuevoCant <= 0) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "¡No Robe!",
+                            text: "¡Añada o deje el producto en su lugar!"
+                        });
+                    } 
+                    else {
+                        prendaele.cant += nuevoCant;
+                        Swal.fire({
+                            icon: "success",
+                            title: "Cambio realizado",
+                            text: `Se añadieron ${nuevoCant} ahora hay ${prendaele.cant}`
+                        });
+                        localStorage.setItem("prendas", JSON.stringify(ropa));
+
                     }
                 }
-                else{
-                    let notdebpar2 = 16 - notapar1
-                    if (notdebpar2 > 10){
-                        alert("debe recuperar ambos parciales")
-                    }
-                    else{
-                        alert("Debe recuperar el 2do parcial y sacar una nota de " +notdebpar2+ " para promocionar")
-                    }
-                        
-                }
+            } else {
+                console.log(`No existe prenda con ID ${prenda.id}`);
             }
-        }
-        num = false
-    }
+
+        });
+
+
+        card.appendChild(cant)
+        card.appendChild(inputNuevoCant)
+        card.appendChild(btnNuevoCant)
+
+        const precio = document.createElement("p")
+        precio.textContent = `Precio: $${prenda.precio}`
+        const inputNuevoPrecio = document.createElement("input");
+        inputNuevoPrecio.placeholder = "Nuevo Precio";
+        const btnNuevoPrecio = document.createElement("button");
+        btnNuevoPrecio.textContent = "Cambiar Precio";
+        btnNuevoPrecio.addEventListener("click",  () => {
+
+            const nuevoPrecio = parseFloat(inputNuevoPrecio.value);
+
+            if (isNaN(nuevoPrecio)) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Ingrese el precio",
+                    text: "Escriba el precio en numeros"
+                });;
+            } else {
+                prenda.precio = nuevoPrecio;
+                localStorage.setItem("prendas", JSON.stringify(ropa));
+                Swal.fire({
+                    icon: "success",
+                    title: "Cambio realizado",
+                    text: `El precio de ${prenda.nombre} fue modificado a $${nuevoPrecio} con exito`
+                });
+            }
+        });
+
+        
+        card.appendChild(precio)
+        card.appendChild(inputNuevoPrecio)
+        card.appendChild(btnNuevoPrecio)
+
+
+        container.appendChild(card)
+
+        })
+
+        body.appendChild(container)
     
-}while(num)
-}
-
-
-function parc(){
-
-    let notapar1 = prompt ("Ingrese la nota del 1er Parcial")
-
-    if(notapar1 >= 6){
-        let notdebpar1 = 16 - notapar1
-        alert("Si quiere promocionar la materia debe sacarse una nota de " +notdebpar1)
+    
+    
     }
     else{
-        alert("debe recuperar el 1er parcial")
+        Swal.fire({
+            icon: "error",
+            title: "No existe coincidencia",
+            text: "no hay resultados para '"+palabra+"'"
+        });
     }
+
+
 }
 
 
-do{
-    alert("Buenas! ¿Usted rindio los 2 parciales?")
-        let respuesta = prompt("Ingrese 1 o 2")
-        if(respuesta > 2)
-        {
-            alert("No existe tal cantidad de parciales")
-        }
-        else{
-            if(respuesta=="2"){
-                promocion();
-                rta = false
-            }
-            else{
-                parc();
-                rta = false
-            }
-        }
+const botonbuscar = document.getElementById("buscar")
+botonbuscar.addEventListener("click", ()=>{filtrarPrendas()})
 
-    }while(rta)
+
+
